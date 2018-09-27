@@ -1,0 +1,189 @@
+#!/bin/bash
+DIR=$(pwd)					#Gets the current path
+if [ "$1" == "clean" ] || [ "$1" == "restore" ] #Here cleans the folder
+then
+    echo "cleaning directory.."			#Cleans Classes
+    echo "clearing class files.."
+    rm *.class
+    echo "..ok"		
+    echo "clearing txt files.."			#Cleans txt files
+    rm *.txt
+    echo "..ok" 
+    echo "clearing .kaf files.."		#Cleans .kaf files
+    rm .*.kaf
+    echo "..ok"
+    echo "clearing Java files.."		#Cleans Java files
+    rm MoveFolders.java
+    rm Notificator.java
+    echo "..ok"
+    echo "clearing .tgz files.."		#Cleans .tgz files
+    rm -r *.tgz
+    echo "..ok"
+    echo "clearing bash scripts.."		#Cleans BashScript folder
+    rm -r .BashScripts
+    echo "..ok"
+    echo "clearing source and log files.."	#Cleans log files
+    rm -r Latency_Analysis
+    echo "..ok"
+    if [ "$1" == "restore" ]			#If restore is entered ,clean Kafka Files
+    then
+	rm -r $DIR"/kafka_2.10-0.9.0.1"
+        echo "clearing kafka directory and log files.."
+	echo "..ok"
+    fi
+    echo "..all done"				#The Work Folder is clean
+    exit;
+elif [ "$1" == "run" ]				#Run the Apache Kafka Latency Application
+then
+    echo "run kafka app."
+    if [ ! -f .Install_Configuration.kaf ]
+    then					#Check if install if first done
+	echo "You must install the application first,please run install"
+    else
+   	 java KafkaLatencyTest&			#Here the programm runs
+    fi
+    exit;
+elif [ "$1" == "install" ]			#Install the Apache Kafka Latency Application
+then						#Check if is already done
+    if [ ! -f .Install_Configuration.kaf ]; then
+		COUNTER=0			#Check if important bash commands are installed
+		a="/check.txt"
+		file="/usr/bin/nload*"
+		echo "-Checking if programm parameters are installed in your system " 
+		echo "-Checking for 'top' install " 
+		octave --version &> $DIR$a	#octave command
+		matlab --version &>> $DIR$a	#matlab command
+		iwconfig --version &>> $DIR$a	#iwconfig command
+		top --version &>> $DIR$a	#top command
+		mvn --version &>> $DIR$a	#maven command
+		if grep -q "top: command not found" $DIR$a
+		then
+			echo "	[NO]  top      is not installed !!!!!"
+			echo "	You must install top to use this app, please enter your password to install top"
+			sudo apt-get install top
+		else 				#Command top checked if doesn't exist ->sudo
+			echo "	[YES] top      is installed"
+		fi
+		echo "-Checking for 'iwconfig' install " 
+		if grep -q "iwconfig: command not found" $DIR$a
+		then
+			echo "	[NO]  iwconfig is not installed !!!!!"
+			echo "	You must install iwconfig to use this app, please enter your password to install iwconfig"
+			sudo apt-get install iwconfig	
+		else 				#Command iwconfig checked if doesn't exist ->sudo
+			echo "	[YES] iwconfig is installed"
+		fi
+		echo "-Checking for 'maven' install " 
+		if grep -q "mvn: command not found" $DIR$a
+		then
+			echo "	[NO]  maven    is not installed !!!!!"
+			echo "	You must install maven to use this app, please enter your password to install maven"
+			sudo apt-get install maven	
+		else 				#Command maven checked if doesn't exist ->sudo
+			echo "	[YES] maven    is installed"
+		fi
+		echo "-Checking for 'nload' install " 
+		if [ -f $file ]
+		then
+			echo "	[YES] nload    is installed"
+		else				#Command nload checked if doesn't exist ->sudo
+			echo "	[NO]  nload    is not installed !!!!!"
+			echo "You must install nload to use this app, please enter your password to install nload"
+			sudo apt-get install nload	
+		fi
+		echo "-Checking for 'matlab' install " 
+		if grep -q "matlab: command not found" $DIR$a
+		then
+			echo "	[NO]  Matlab   is not installed !!!!!"
+		else 				#Command matlab checked if doesn't exist ->sudo
+			echo "	[YES] Matlab   is installed"
+			COUNTER=$[$COUNTER+1]
+			prog="matlab"
+		fi
+		echo "-Checking for 'octave' install " 
+		if grep -q "octave: command not found" $DIR$a
+		then
+			echo "	[NO]  Octave   is not installed !!!!!"
+		else 				#Command octave checked if doesn't exist ->sudo
+			echo "	[YES] Octave   is installed"
+			COUNTER=$[$COUNTER+1]
+			prog="octave"
+		fi
+						#Clear check command file
+		if [ -f $DIR$a ]
+		then
+			rm $DIR$a
+		fi				#if none of octave or matlab is installed
+		if [ $COUNTER -eq 0 ]		#terminate
+		then
+			echo "You must install Octave or Matlab to use this app"
+			echo "Please first install Octave or Matlab and then resume the installation"
+			echo "Check Complete ...FAILURE"
+			echo "INSTALATION FAILED"		
+			exit
+		fi
+		if [ $COUNTER -eq 2 ]		#if both of octave and matlab is installed
+		then				#user choose one of them
+			echo "Choose the enviroment for the calculations :[  matlab - octave ]"
+			echo "-->Type 'matlab' ,to use matlab programm"
+			echo "-->Type 'octave' ,to use octave programm"
+			read prog 
+			while [ "$prog" != "matlab" ] && [ "$prog" != "octave" ]
+			do
+				echo "Wrong input , '"$prog"' is not an option"	
+				echo "Choose between 'matlab' and 'octave'"
+				read prog 
+			done
+		fi				#Check is complete
+		echo "--> Using "$prog" enviroment for application"
+		java -version 
+		echo "Check Complete ...SUCCESS"
+		echo $prog > $DIR"/.Matlab_Or_Octave.kaf"
+		echo "Apache Kafka 2.10-0.9.0.1 instalation"
+        if [ -d $DIR"/kafka_2.10-0.9.0.1" ]; then
+		        echo "Kafka Directory exists"
+		else				#Check if kafka files are installed
+            echo "Downloading Kafka Files.."	#if not,downloads kafka 2.10-0.9.0.1
+            wget http://apache.cc.uoc.gr/kafka/0.9.0.1/kafka_2.10-0.9.0.1.tgz
+            echo "..download finished"		#OK finished 
+            echo "Extracting files.."
+            tar xvzf kafka_2.10-0.9.0.1.tgz	#Unzip the compressed file
+            echo "..extraction finished"
+            echo "removing archive.."
+            rm kafka_2.10-0.9.0.1.tgz		#Delete the compressed file
+            echo "..removal finished"
+        fi
+	echo "Starting Installation..."
+        javac -g *.java				#Here creates the Java classes
+        echo "Files compiled succesfully."
+        java Install				#Execute Install.java
+	javac -g MoveFolders.java		#Create MoveFolders java class	
+	javac -g Notificator.java		#Create Notificator java class
+        echo "Installatiion finished."		#Ok, Follows message of the commands that user must do after
+        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!! CONSIDER THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        echo " *After the installation please make sure you"
+        echo " *run once the following commands :"
+        echo "   1. sudo visudo -f /etc/sudoers.d/iwconfig"
+        echo "   2. write -> your-user-name ALL=(root) NOPASSWD: /sbin/iwconfig"
+        echo "   3. save it"
+ 	echo "   4. check -> ls -l /etc/sudoers.d/iwconfig"
+ 	echo "     4.1 right output ->1 root root 0 Feb 1 21:34 /etc/sudoers.d/iwconfig!!"
+        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        echo "You may now start the application "
+    else 
+        echo "Application installed already."	#If install already done 
+    fi
+    exit;
+else
+    if [ ! $# -eq 0 ]				#Check for wrong input of user
+    then
+        echo "Don't know what to do with ''$1''"
+        echo ""
+    fi
+    echo "Use one of the following arguments."	#Remind user of the valid programm arguments
+    echo "1) install:  creates and runs install files."
+    echo "2) run:      runs java app."
+    echo "3) clean:    cleans installation files."
+    echo "4) restore:  restores and cleans everything"
+fi
+exit;						#End of Bash Script
