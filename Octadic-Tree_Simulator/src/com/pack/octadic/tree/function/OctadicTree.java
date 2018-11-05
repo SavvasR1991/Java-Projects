@@ -1,5 +1,6 @@
 package com.pack.octadic.tree.function;
 
+import com.pack.binary.converter.binaryConverter;
 import com.pack.colours.ColorInputTable;
 
 public class OctadicTree implements OctadicFunctionality{
@@ -8,6 +9,8 @@ public class OctadicTree implements OctadicFunctionality{
 	private OctadicTreeNode root;
 	
 	private int OctadicTreeDepth;
+	
+	private binaryConverter convertColor;
 	
 	//Constructor
 	public int getOctadicTreeDepth() {
@@ -19,23 +22,39 @@ public class OctadicTree implements OctadicFunctionality{
 	}
 
 	public OctadicTree(int depth,ColorInputTable input) {
-		this.root = null;
+		this.root = new OctadicTreeNode();
+		setOctadicTreeDepth(depth);
+		OctadicTreeCreation(input,depth);
 		// TODO Auto-generated constructor stub
 	}
 
 	//--------------------- Interface -------------//
 	@Override
-	public void OctadicTreeCreation() {
+	public void OctadicTreeCreation(ColorInputTable input,int depth) {
 		// TODO Auto-generated method stub
-		if(this.root == null) {
-			root = new OctadicTreeNode();
-			
+		OctadicTreeNode next = this.root;
+		for(int i=0;i<input.colourArray.length;i++) {
+			for(int j=0;j<depth;i++) {
+				if(j == (depth-1)) {
+					if(next.bucket==null) {
+						next.bucket = new Bucket();
+						next.bucket.BucketInsertColor(input.colourArray[i]);
+					}
+					else {
+						next.bucket.BucketInsertColor(input.colourArray[i]);
+					}
+				}
+				else {
+					if(next.child[convertColor.colorConvertIndex(input.colourArray[i],j)]==null) {
+						next.child[convertColor.colorConvertIndex(input.colourArray[i],j)] = new OctadicTreeNode();
+						next = next.child[convertColor.colorConvertIndex(input.colourArray[i],j)];
+					}
+					else {
+						next = next.child[convertColor.colorConvertIndex(input.colourArray[i],j)];
+					}
+				}
+			}
 		}
-		else {
-			
-			
-		}
-		
 	}
 
 	@Override

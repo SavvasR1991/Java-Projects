@@ -1,37 +1,31 @@
 package com.pack.colours;
 
+
 public class ColorInputTable {
 
-	private colorValue [] colourArray;
+	public ColorValue [] colourArray;
 	private int serialNumber;
 	
 	public int getSerialNumber() {
 		return serialNumber;
 	}
 
-	class colorValue{
-		private int red;
-		private int green;
-		private int blue;
-		private int color;
-	}
-	
 	public  ColorInputTable(int dimension) {
-		this.colourArray = new colorValue[dimension * dimension];
+		this.colourArray = new ColorValue[dimension * dimension];
 		this.serialNumber = 0;
 	}
 	
-	public colorValue[] getColourArray() {
+	public ColorValue[] getColourArray() {
 		return colourArray;
 	}
 
-	public void setColourArray(colorValue[] colourArray) {
+	public void setColourArray(ColorValue[] colourArray) {
 		this.colourArray = colourArray;
 	}
 
 	public void ColorInputValue(int red,int green,int blue,int index,int color) {
 
-		colourArray[index] = new colorValue();
+		colourArray[index] = new ColorValue();
 		
 		colourArray[index].red = red;
 		colourArray[index].green = green;

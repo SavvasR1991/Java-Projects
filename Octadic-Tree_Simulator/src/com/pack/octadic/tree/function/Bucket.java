@@ -1,6 +1,14 @@
 package com.pack.octadic.tree.function;
 
+import com.pack.colours.ColorValue;
+
 public class Bucket {
+	
+	public int redColourCounter;
+	public int greenColourCounter;
+	public int blueColourCounter;
+	public int summaryCounter;
+
 
 	Bucket() {
 		this.summaryCounter = 0;
@@ -9,35 +17,13 @@ public class Bucket {
 		this.blueColourCounter = 0;
 	}
 	
-	private int summaryCounter;
+	void BucketInsertColor(ColorValue colorInput) {
+		this.redColourCounter = this.redColourCounter+colorInput.red;
+		this.greenColourCounter = this.redColourCounter+colorInput.green;
+		this.blueColourCounter = this.redColourCounter+colorInput.blue;
+		this.summaryCounter++;
+	}
 	
-	public int getSummaryCounter() {
-		return summaryCounter;
-	}
-	public void setSummaryCounter(int summaryCounter) {
-		this.summaryCounter = summaryCounter;
-	}
-	public int getRedColourCounter() {
-		return redColourCounter;
-	}
-	public void setRedColourCounter(int redColourCounter) {
-		this.redColourCounter = redColourCounter;
-	}
-	public int getGreenColourCounter() {
-		return greenColourCounter;
-	}
-	public void setGreenColourCounter(int greenColourCounter) {
-		this.greenColourCounter = greenColourCounter;
-	}
-	public int getBlueColourCounter() {
-		return blueColourCounter;
-	}
-	public void setBlueColourCounter(int blueColourCounter) {
-		this.blueColourCounter = blueColourCounter;
-	}
 
-	private int redColourCounter;
-	private int greenColourCounter;
-	private int blueColourCounter;
-
+	
 }

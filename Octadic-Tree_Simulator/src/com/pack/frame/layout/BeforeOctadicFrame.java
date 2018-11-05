@@ -71,7 +71,7 @@ public class BeforeOctadicFrame {
 			}
 		}  
 		OctadicTree octadicTreeAlgorith = new OctadicTree(depth,inputColor);
-
+  
 		new AfterOctadicFrame(dimension,inputColor);
 
 		
